@@ -16,7 +16,7 @@ def rgb_to_cmyk(rgb):
         cyan = (1 - red - black) / (1 - black)
         magenta = (1 - green - black) / (1 - black)
         yellow = (1 - blue - black) / (1 - black)
-    return cyan, magenta, yellow, black
+    return cyan, magenta, yellow
 
 
 def split_image_to_cmyk(image_path):
@@ -26,41 +26,34 @@ def split_image_to_cmyk(image_path):
     c_channel = np.zeros((height, width), dtype=np.float32)
     m_channel = np.zeros((height, width), dtype=np.float32)
     y_channel = np.zeros((height, width), dtype=np.float32)
-    k_channel = np.zeros((height, width), dtype=np.float32)
 
     for x in range(width):
         for y in range(height):
             rgb = image.getpixel((x, y))
-            cyan, magenta, yellow, black = rgb_to_cmyk([r / 255.0 for r in rgb])
+            cyan, magenta, yellow = rgb_to_cmyk([r / 255.0 for r in rgb])
             c_channel[y, x] = cyan * 255
             m_channel[y, x] = magenta * 255
             y_channel[y, x] = yellow * 255
-            k_channel[y, x] = black * 255
 
-    return c_channel, m_channel, y_channel, k_channel
+    return c_channel, m_channel, y_channel
 
 
-def display_channels(cyan, magenta, yellow, black):
+def display_channels(cyan, magenta, yellow):
     plt.figure(figsize=(10, 8))
 
-    plt.subplot(2, 2, 1)
+    plt.subplot(1, 3, 1)
     plt.title('Cyan Channel')
     plt.imshow(cyan, cmap='gray')
     plt.axis('off')
 
-    plt.subplot(2, 2, 2)
+    plt.subplot(1, 3, 2)
     plt.title('Magenta Channel')
     plt.imshow(magenta, cmap='gray')
     plt.axis('off')
 
-    plt.subplot(2, 2, 3)
+    plt.subplot(1, 3, 3)
     plt.title('Yellow Channel')
     plt.imshow(yellow, cmap='gray')
-    plt.axis('off')
-
-    plt.subplot(2, 2, 4)
-    plt.title('Black Channel')
-    plt.imshow(black, cmap='gray')
     plt.axis('off')
 
     plt.tight_layout()
@@ -68,5 +61,5 @@ def display_channels(cyan, magenta, yellow, black):
 
 
 image_path = f"images/{os.getenv('IMAGE_NAME')}"
-cyan, magenta, yellow, black = split_image_to_cmyk(image_path)
-display_channels(cyan, magenta, yellow, black)
+cyan, magenta, yellow = split_image_to_cmyk(image_path)
+display_channels(cyan, magenta, yellow)
