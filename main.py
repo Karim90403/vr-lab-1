@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,15 +6,16 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
+
 def rgb_to_cmyk(rgb):
     red, green, blue = rgb
     black = 1 - max(red, green, blue)
     if black == 1:
         cyan = magenta = yellow = 0
     else:
-        cyan = (1 - r - black) / (1 - black)
-        magenta = (1 - g - black) / (1 - black)
-        yellow = (1 - b - black) / (1 - black)
+        cyan = (1 - red - black) / (1 - black)
+        magenta = (1 - green - black) / (1 - black)
+        yellow = (1 - blue - black) / (1 - black)
     return cyan, magenta, yellow, black
 
 
@@ -65,7 +67,6 @@ def display_channels(cyan, magenta, yellow, black):
     plt.show()
 
 
-# Укажите путь к вашему BMP файлу
 image_path = f"images/{os.getenv('IMAGE_NAME')}"
 cyan, magenta, yellow, black = split_image_to_cmyk(image_path)
 display_channels(cyan, magenta, yellow, black)
